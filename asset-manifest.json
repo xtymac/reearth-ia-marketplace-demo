@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/reearth-ia-marketplace-demo/static/css/main.51fde562.css",
+    "main.js": "/reearth-ia-marketplace-demo/static/js/main.abe6bebe.js",
+    "index.html": "/reearth-ia-marketplace-demo/index.html",
+    "main.51fde562.css.map": "/reearth-ia-marketplace-demo/static/css/main.51fde562.css.map",
+    "main.abe6bebe.js.map": "/reearth-ia-marketplace-demo/static/js/main.abe6bebe.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.51fde562.css",
+    "static/js/main.abe6bebe.js"
+  ]
+}
