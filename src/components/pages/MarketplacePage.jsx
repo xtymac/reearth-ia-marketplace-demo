@@ -1,20 +1,32 @@
 import React, { useState, useMemo } from 'react';
 import { Button } from '../ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '../ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  CardFooter,
+} from '../ui/card';
 import { Badge } from '../ui/badge';
 import { Select } from '../ui/select';
 import { useUser } from '../../contexts/UserContext';
-import { mockPlugins, platforms, functions, userRoles } from '../../data/mockPlugins';
-import { 
-  Download, 
-  Star, 
-  Calendar, 
-  User, 
-  HardDrive, 
+import {
+  mockPlugins,
+  platforms,
+  functions,
+  userRoles,
+} from '../../data/mockPlugins';
+import {
+  Download,
+  Star,
+  Calendar,
+  User,
+  HardDrive,
   Search,
   Filter,
   CheckCircle,
-  Package
+  Package,
 } from 'lucide-react';
 
 const MarketplacePage = () => {
@@ -24,13 +36,16 @@ const MarketplacePage = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
   const filteredPlugins = useMemo(() => {
-    return mockPlugins.filter(plugin => {
-      const matchesPlatform = platformFilter === 'All' || plugin.platform === platformFilter;
-      const matchesFunction = functionFilter === 'All' || plugin.function === functionFilter;
-      const matchesSearch = plugin.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           plugin.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           plugin.author.toLowerCase().includes(searchTerm.toLowerCase());
-      
+    return mockPlugins.filter((plugin) => {
+      const matchesPlatform =
+        platformFilter === 'All' || plugin.platform === platformFilter;
+      const matchesFunction =
+        functionFilter === 'All' || plugin.function === functionFilter;
+      const matchesSearch =
+        plugin.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        plugin.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        plugin.author.toLowerCase().includes(searchTerm.toLowerCase());
+
       return matchesPlatform && matchesFunction && matchesSearch;
     });
   }, [platformFilter, functionFilter, searchTerm]);
@@ -50,15 +65,22 @@ const MarketplacePage = () => {
 
   const getPlatformColor = (platform) => {
     switch (platform) {
-      case 'Visualizer': return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'CMS': return 'bg-green-100 text-green-800 border-green-200';
-      case 'Flow': return 'bg-purple-100 text-purple-800 border-purple-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+      case 'Visualizer':
+        return 'bg-blue-100 text-blue-800 border-blue-200';
+      case 'CMS':
+        return 'bg-green-100 text-green-800 border-green-200';
+      case 'Flow':
+        return 'bg-purple-100 text-purple-800 border-purple-200';
+      default:
+        return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   };
 
   const isPluginInstalled = (pluginId) => {
-    return installedPlugins.includes(pluginId) || mockPlugins.find(p => p.id === pluginId)?.installed;
+    return (
+      installedPlugins.includes(pluginId) ||
+      mockPlugins.find((p) => p.id === pluginId)?.installed
+    );
   };
 
   return (
@@ -109,7 +131,7 @@ const MarketplacePage = () => {
                 value={platformFilter}
                 onChange={(e) => setPlatformFilter(e.target.value)}
               >
-                {platforms.map(platform => (
+                {platforms.map((platform) => (
                   <option key={platform} value={platform}>
                     {platform}
                   </option>
@@ -124,7 +146,7 @@ const MarketplacePage = () => {
                 value={functionFilter}
                 onChange={(e) => setFunctionFilter(e.target.value)}
               >
-                {functions.map(func => (
+                {functions.map((func) => (
                   <option key={func} value={func}>
                     {func}
                   </option>
@@ -138,7 +160,10 @@ const MarketplacePage = () => {
       {/* Plugin Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredPlugins.map((plugin) => (
-          <Card key={plugin.id} className="flex flex-col hover:shadow-lg transition-shadow">
+          <Card
+            key={plugin.id}
+            className="flex flex-col hover:shadow-lg transition-shadow"
+          >
             <CardHeader>
               <div className="flex items-start justify-between">
                 <div className="flex-1">
@@ -168,7 +193,7 @@ const MarketplacePage = () => {
                 <Badge variant="outline" className="mr-2">
                   {plugin.function}
                 </Badge>
-                
+
                 <div className="grid grid-cols-2 gap-4 text-xs text-muted-foreground">
                   <div className="flex items-center space-x-1">
                     <Star className="h-3 w-3 fill-current text-yellow-500" />
@@ -193,7 +218,7 @@ const MarketplacePage = () => {
             <CardFooter className="pt-4">
               <div className="flex space-x-2 w-full">
                 {currentUser.isLoggedIn && !isPluginInstalled(plugin.id) ? (
-                  <Button 
+                  <Button
                     onClick={() => handleInstall(plugin.id)}
                     className="flex-1"
                   >
@@ -204,15 +229,23 @@ const MarketplacePage = () => {
                     Installed
                   </Button>
                 ) : (
-                  <Button 
-                    variant="outline" 
+                  <Button
                     onClick={() => handleDownload(plugin)}
                     className="flex-1"
                   >
-                    Download ZIP
+                    Install
                   </Button>
                 )}
-                
+
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleDownload(plugin)}
+                  className="flex items-center justify-center"
+                >
+                  <Download className="h-4 w-4" />
+                </Button>
+
                 <Button variant="ghost" size="sm">
                   Details
                 </Button>
@@ -239,8 +272,8 @@ const MarketplacePage = () => {
         <Card className="bg-muted/50">
           <CardContent className="pt-6">
             <p className="text-center text-muted-foreground">
-              <strong>Note:</strong> You need to be logged in to install plugins. 
-              Anonymous users can browse and download ZIP files.
+              <strong>Note:</strong> You need to be logged in to install
+              plugins. Anonymous users can browse and download ZIP files.
             </p>
           </CardContent>
         </Card>
@@ -249,4 +282,4 @@ const MarketplacePage = () => {
   );
 };
 
-export default MarketplacePage; 
+export default MarketplacePage;
