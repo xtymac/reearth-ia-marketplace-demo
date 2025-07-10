@@ -178,9 +178,19 @@ const MarketplacePage = () => {
                     <span>{plugin.author}</span>
                   </CardDescription>
                 </div>
-                <Badge className={getPlatformColor(plugin.platform)}>
-                  {plugin.platform}
-                </Badge>
+                <div className="flex flex-col items-end space-y-1">
+                  <Badge variant={plugin.platform === 'Visualizer' ? 'visualizer' : 'default'}>
+                    {plugin.platform}
+                  </Badge>
+                  {plugin.platform === 'Visualizer' && plugin.pluginType && (
+                    <Badge
+                      variant={plugin.pluginType.toLowerCase()}
+                      className="mt-1 ml-2"
+                    >
+                      {plugin.pluginType}
+                    </Badge>
+                  )}
+                </div>
               </div>
             </CardHeader>
 
