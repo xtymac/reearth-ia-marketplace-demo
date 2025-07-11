@@ -11,6 +11,7 @@ const Navigation = ({ currentPage, setCurrentPage }) => {
   const navigationItems = [
     { id: 'home', label: 'Home', icon: Home },
     { id: 'marketplace', label: 'Plugin Marketplace', icon: Package },
+    { id: 'visualizer-plugins', label: 'Visualizer Plugins', icon: Package },
     { id: 'my-plugins', label: 'My Plugins', icon: Folder, requiresAuth: true },
     {
       id: 'developer-center',
