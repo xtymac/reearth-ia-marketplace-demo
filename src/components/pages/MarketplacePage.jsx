@@ -162,8 +162,15 @@ const MarketplacePage = () => {
         {filteredPlugins.map((plugin) => (
           <Card
             key={plugin.id}
-            className="flex flex-col hover:shadow-lg transition-shadow"
+            className="flex flex-col hover:shadow-lg transition-shadow relative"
           >
+            {/* Platform Badge Top Right */}
+            <Badge
+              variant={`platform-${plugin.platform.toLowerCase()}`}
+              className="absolute top-4 right-4 z-10 shadow-md"
+            >
+              {plugin.platform.toUpperCase()}
+            </Badge>
             <CardHeader>
               <div className="flex items-start justify-between">
                 <div className="flex-1">
@@ -179,15 +186,10 @@ const MarketplacePage = () => {
                   </CardDescription>
                 </div>
                 <div className="flex flex-col items-end space-y-1">
-                  <Badge variant={plugin.platform === 'Visualizer' ? 'visualizer' : 'default'}>
-                    {plugin.platform}
-                  </Badge>
-                  {plugin.platform === 'Visualizer' && plugin.pluginType && (
-                    <Badge
-                      variant={plugin.pluginType.toLowerCase()}
-                      className="mt-1 ml-2"
-                    >
-                      {plugin.pluginType}
+                  {plugin.pluginType && (
+                    <Badge className="bg-black text-white border-transparent">
+                      {plugin.pluginType.charAt(0).toUpperCase() +
+                        plugin.pluginType.slice(1).toLowerCase()}
                     </Badge>
                   )}
                 </div>
@@ -200,9 +202,13 @@ const MarketplacePage = () => {
               </p>
 
               <div className="space-y-2">
-                <Badge variant="outline" className="mr-2">
-                  {plugin.function}
-                </Badge>
+                {/* Remove platform badge from here */}
+                {/* <Badge
+                  variant={`platform-${plugin.platform.toLowerCase()}`}
+                  className="mr-2"
+                >
+                  {plugin.platform.toUpperCase()}
+                </Badge> */}
 
                 <div className="grid grid-cols-2 gap-4 text-xs text-muted-foreground">
                   <div className="flex items-center space-x-1">
@@ -256,7 +262,15 @@ const MarketplacePage = () => {
                   <Download className="h-4 w-4" />
                 </Button>
 
-                <Button variant="ghost" size="sm">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    window.dispatchEvent(
+                      new CustomEvent('showPluginDetail', { detail: plugin.id })
+                    );
+                  }}
+                >
                   Details
                 </Button>
               </div>
