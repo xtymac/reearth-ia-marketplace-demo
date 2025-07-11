@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
+import { NotificationBanner } from '../ui/notification-banner';
 import { useUser } from '../../contexts/UserContext';
 import { mockPlugins } from '../../data/mockPlugins';
 import {
@@ -29,6 +30,7 @@ const visualizerProjects = [
     image:
       'https://via.placeholder.com/400x300/2a2a2a/e74c3c?text=Re:Earth+Logo',
     description: 'Main project workspace',
+    url: 'https://xtymac.github.io/reearth-ia-marketplace-demo/',
   },
   {
     id: '2',
@@ -36,6 +38,7 @@ const visualizerProjects = [
     image:
       'https://via.placeholder.com/400x300/2a2a2a/e74c3c?text=Re:Earth+Logo',
     description: 'Development environment',
+    url: 'https://xtymac.github.io/reearth-ia-marketplace-demo/',
   },
 ];
 
@@ -45,6 +48,8 @@ const PluginDetailPage = ({ pluginId, onBack }) => {
   const [likedPlugins, setLikedPlugins] = useState([]);
   const [showProjectModal, setShowProjectModal] = useState(false);
   const [installingProject, setInstallingProject] = useState(null);
+  const [showNotification, setShowNotification] = useState(false);
+  const [notificationData, setNotificationData] = useState({});
 
   // Find the plugin by ID
   const plugin = mockPlugins.find((p) => p.id === pluginId);
@@ -129,9 +134,19 @@ const PluginDetailPage = ({ pluginId, onBack }) => {
       setShowProjectModal(false);
       setInstallingProject(null);
       installPlugin(pluginId);
-      alert(
-        `${plugin.name} successfully installed to project '${project.name}'! (This is a mock action)`
-      );
+      
+      // Show notification banner instead of alert
+      setNotificationData({
+        pluginName: plugin.name,
+        projectName: project.name,
+        projectUrl: project.url,
+      });
+      setShowNotification(true);
+      
+      // Auto-hide notification after 10 seconds
+      setTimeout(() => {
+        setShowNotification(false);
+      }, 10000);
     }, 1200);
   };
 
@@ -145,6 +160,10 @@ const PluginDetailPage = ({ pluginId, onBack }) => {
         ? prev.filter((id) => id !== pluginId)
         : [...prev, pluginId]
     );
+  };
+
+  const handleCloseNotification = () => {
+    setShowNotification(false);
   };
 
   const isPluginInstalled = () => {
@@ -568,6 +587,16 @@ const PluginDetailPage = ({ pluginId, onBack }) => {
           )}
         </div>
       </div>
+
+      {/* Notification Banner */}
+      {showNotification && (
+        <NotificationBanner
+          onClose={handleCloseNotification}
+          pluginName={notificationData.pluginName}
+          projectName={notificationData.projectName}
+          projectUrl={notificationData.projectUrl}
+        />
+      )}
     </div>
   );
 };
