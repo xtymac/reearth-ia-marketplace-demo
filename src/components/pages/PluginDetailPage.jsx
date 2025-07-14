@@ -710,165 +710,80 @@ const PluginDetailPage = ({ pluginId, onBack }) => {
           )}
 
           {activeTab === 'permissions' && (
-            <div className="space-y-6">
-              {/* Permissions Overview */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center space-x-3 text-2xl">
-                    <Shield className="h-6 w-6 text-blue-500" />
-                    <span>Permissions & Privacy</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
+            <Card>
+              <CardContent className="space-y-8 pt-6">
+                {/* Main Title */}
+                <div>
+                  <h2 className="text-2xl font-bold mb-6">🔐 Permissions & Privacy（权限与隐私）</h2>
+                </div>
+
+                {/* Required Permissions Section */}
+                <div>
+                  <h3 className="text-xl font-bold mb-4">Required Permissions</h3>
                   <p className="text-lg text-muted-foreground mb-6">
-                    This plugin requires the following permissions to function properly. 
-                    All data handling follows industry security standards and privacy best practices.
+                    This plugin runs in a secure sandbox (iframe) and declares the following permissions in its reearth.yml manifest:
                   </p>
                   
-                  {/* Data Access Permissions */}
-                  <div className="mb-8">
-                    <h3 className="flex items-center space-x-2 text-xl font-bold mb-4">
-                      <Database className="h-5 w-5 text-green-500" />
-                      <span>Data Access</span>
-                    </h3>
-                    <ul className="space-y-2">
-                      {pluginInfo.permissions.dataAccess.map((permission, index) => (
-                        <li key={index} className="flex items-start space-x-3">
-                          <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                          <span className="text-lg">{permission}</span>
-                        </li>
-                      ))}
-                    </ul>
+                  <div className="space-y-4 ml-4">
+                    <div>
+                      <p className="text-lg">
+                        <span className="font-mono bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">project-data.read</span>: 
+                        Read current project's map and layer configurations for rendering purposes.
+                      </p>
+                    </div>
+                    
+                    <div>
+                      <p className="text-lg">
+                        <span className="text-muted-foreground">(Optional)</span> <span className="font-mono bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">geolocation</span>: 
+                        Access user's current location, used only when the "Enable Location" feature is triggered.
+                      </p>
+                    </div>
+                    
+                    <div>
+                      <p className="text-lg">
+                        <span className="text-muted-foreground">(Optional)</span> <span className="font-mono bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">network</span>: 
+                        Fetch external resources (e.g., tile layers, geoJSON) when user explicitly invokes "Load from URL".
+                      </p>
+                    </div>
                   </div>
+                </div>
 
-                  {/* Network Access */}
-                  <div className="mb-8">
-                    <h3 className="flex items-center space-x-2 text-xl font-bold mb-4">
-                      <Globe className="h-5 w-5 text-blue-500" />
-                      <span>Network Access</span>
-                    </h3>
-                    <ul className="space-y-2">
-                      {pluginInfo.permissions.networkAccess.map((permission, index) => (
-                        <li key={index} className="flex items-start space-x-3">
-                          <CheckCircle className="h-5 w-5 text-blue-500 mt-0.5 flex-shrink-0" />
-                          <span className="text-lg">{permission}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  {/* System Access */}
-                  <div className="mb-8">
-                    <h3 className="flex items-center space-x-2 text-xl font-bold mb-4">
-                      <HardDrive className="h-5 w-5 text-purple-500" />
-                      <span>System Access</span>
-                    </h3>
-                    <ul className="space-y-2">
-                      {pluginInfo.permissions.systemAccess.map((permission, index) => (
-                        <li key={index} className="flex items-start space-x-3">
-                          <CheckCircle className="h-5 w-5 text-purple-500 mt-0.5 flex-shrink-0" />
-                          <span className="text-lg">{permission}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Data Handling & Privacy */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center space-x-3 text-2xl">
-                    <Lock className="h-6 w-6 text-amber-500" />
-                    <span>Data Handling & Privacy</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <div>
-                    <h4 className="flex items-center space-x-2 font-bold text-lg mb-2">
-                      <Eye className="h-5 w-5 text-amber-500" />
-                      <span>Data Collection</span>
-                    </h4>
-                    <p className="text-lg text-muted-foreground">
-                      {pluginInfo.permissions.dataHandling.collection}
-                    </p>
-                  </div>
-
-                  <div>
-                    <h4 className="flex items-center space-x-2 font-bold text-lg mb-2">
-                      <Database className="h-5 w-5 text-amber-500" />
-                      <span>Data Storage</span>
-                    </h4>
-                    <p className="text-lg text-muted-foreground">
-                      {pluginInfo.permissions.dataHandling.storage}
-                    </p>
-                  </div>
-
-                  <div>
-                    <h4 className="flex items-center space-x-2 font-bold text-lg mb-2">
-                      <Share2 className="h-5 w-5 text-amber-500" />
-                      <span>Data Sharing</span>
-                    </h4>
-                    <p className="text-lg text-muted-foreground">
-                      {pluginInfo.permissions.dataHandling.sharing}
-                    </p>
-                  </div>
-
-                  <div>
-                    <h4 className="flex items-center space-x-2 font-bold text-lg mb-2">
-                      <Calendar className="h-5 w-5 text-amber-500" />
-                      <span>Data Retention</span>
-                    </h4>
-                    <p className="text-lg text-muted-foreground">
-                      {pluginInfo.permissions.dataHandling.retention}
-                    </p>
-                  </div>
-
-                  <div>
-                    <h4 className="flex items-center space-x-2 font-bold text-lg mb-2">
-                      <Shield className="h-5 w-5 text-amber-500" />
-                      <span>Data Encryption</span>
-                    </h4>
-                    <p className="text-lg text-muted-foreground">
-                      {pluginInfo.permissions.dataHandling.encryption}
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Security & Compliance */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center space-x-3 text-2xl">
-                    <AlertTriangle className="h-6 w-6 text-red-500" />
-                    <span>Security & Compliance</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-lg text-muted-foreground mb-4">
-                    This plugin adheres to the following security standards and compliance requirements:
-                  </p>
-                  <ul className="space-y-2">
-                    {pluginInfo.permissions.compliance.map((standard, index) => (
-                      <li key={index} className="flex items-start space-x-3">
-                        <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                        <span className="text-lg">{standard}</span>
-                      </li>
-                    ))}
-                  </ul>
+                {/* Data Handling & Privacy Section */}
+                <div>
+                  <h3 className="text-xl font-bold mb-4">🛡 Data Handling & Privacy（数据处理与隐私）</h3>
                   
-                  <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-                    <h4 className="font-bold text-lg mb-2 text-blue-800 dark:text-blue-200">
-                      Need Help?
-                    </h4>
-                    <p className="text-blue-700 dark:text-blue-300">
-                      If you have questions about data handling or security practices, 
-                      please contact the plugin developer or review our privacy policy.
-                    </p>
+                  <div className="space-y-4">
+                    <div className="flex items-start space-x-3">
+                      <span className="text-green-500 text-xl">✔️</span>
+                      <p className="text-lg">
+                        All UI scripts run inside a sandboxed environment and cannot access your account data or storage outside of this plugin.
+                      </p>
+                    </div>
+                    
+                    <div className="flex items-start space-x-3">
+                      <span className="text-green-500 text-xl">✔️</span>
+                      <p className="text-lg">
+                        The plugin does not collect or store any personal data. Any fetched or user-provided data will not be shared or persisted.
+                      </p>
+                    </div>
+                    
+                    <div className="flex items-start space-x-3">
+                      <span className="text-yellow-500 text-xl">❗</span>
+                      <p className="text-lg">
+                        Optional permissions (geolocation, network) are only requested when users activate the related feature; they are not requested during installation.
+                      </p>
+                    </div>
+                    
+                    <div className="flex items-start space-x-3">
+                      <span className="text-red-500 text-xl">🛑</span>
+                      <p className="text-lg">
+                        You remain in control—each permission request is accompanied by a user prompt and can be revoked at any time from the plugin settings panel.
+                      </p>
+                    </div>
                   </div>
-                </CardContent>
-              </Card>
-            </div>
+                </div>
+              </CardContent>
+            </Card>
           )}
         </div>
       </div>
