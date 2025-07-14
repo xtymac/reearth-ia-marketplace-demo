@@ -26,6 +26,8 @@ import {
   Database,
   Globe,
   AlertTriangle,
+  Search,
+  Plus,
 } from 'lucide-react';
 
 // Mock Visualizer projects styled like the image
