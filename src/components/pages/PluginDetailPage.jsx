@@ -20,6 +20,8 @@ import {
   Heart,
   Share2,
   X,
+  Plus,
+  Search,
 } from 'lucide-react';
 
 // Mock Visualizer projects styled like the image
@@ -30,7 +32,7 @@ const visualizerProjects = [
     image:
       'https://via.placeholder.com/400x300/2a2a2a/e74c3c?text=Re:Earth+Logo',
     description: 'Main project workspace',
-    url: 'https://xtymac.github.io/reearth-ia-marketplace-demo/',
+    url: 'https://visualizer.dev.reearth.io/scene/01jzq2av70sa60zm4ftcyahx9g/map',
   },
   {
     id: '2',
@@ -38,7 +40,7 @@ const visualizerProjects = [
     image:
       'https://via.placeholder.com/400x300/2a2a2a/e74c3c?text=Re:Earth+Logo',
     description: 'Development environment',
-    url: 'https://xtymac.github.io/reearth-ia-marketplace-demo/',
+    url: 'https://visualizer.dev.reearth.io/scene/01jzq2av70sa60zm4ftcyahx9g/map',
   },
 ];
 
@@ -50,6 +52,7 @@ const PluginDetailPage = ({ pluginId, onBack }) => {
   const [installingProject, setInstallingProject] = useState(null);
   const [showNotification, setShowNotification] = useState(false);
   const [notificationData, setNotificationData] = useState({});
+  const [projectSearchTerm, setProjectSearchTerm] = useState('');
 
   // Find the plugin by ID
   const plugin = mockPlugins.find((p) => p.id === pluginId);
@@ -124,7 +127,17 @@ const PluginDetailPage = ({ pluginId, onBack }) => {
     ],
   };
 
+  // Filter projects based on search term
+  const filteredProjects = visualizerProjects.filter(
+    (project) =>
+      project.name.toLowerCase().includes(projectSearchTerm.toLowerCase()) ||
+      project.description
+        .toLowerCase()
+        .includes(projectSearchTerm.toLowerCase())
+  );
+
   const handleInstall = () => {
+    setProjectSearchTerm(''); // Clear search when opening modal
     setShowProjectModal(true);
   };
 
@@ -134,7 +147,7 @@ const PluginDetailPage = ({ pluginId, onBack }) => {
       setShowProjectModal(false);
       setInstallingProject(null);
       installPlugin(pluginId);
-      
+
       // Show notification banner instead of alert
       setNotificationData({
         pluginName: plugin.name,
@@ -142,7 +155,7 @@ const PluginDetailPage = ({ pluginId, onBack }) => {
         projectUrl: project.url,
       });
       setShowNotification(true);
-      
+
       // Auto-hide notification after 10 seconds
       setTimeout(() => {
         setShowNotification(false);
@@ -193,22 +206,37 @@ const PluginDetailPage = ({ pluginId, onBack }) => {
       {showProjectModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80">
           <div className="bg-[#1a1a1a] rounded-2xl p-8 max-w-4xl w-full mx-4 shadow-2xl">
-            <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-medium text-gray-300">
                 All projects
               </h2>
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setShowProjectModal(false)}
+                onClick={() => {
+                  setProjectSearchTerm('');
+                  setShowProjectModal(false);
+                }}
                 className="text-gray-400 hover:text-white"
               >
                 <X className="h-5 w-5" />
               </Button>
             </div>
 
+            {/* Search Bar */}
+            <div className="relative mb-6">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search projects..."
+                value={projectSearchTerm}
+                onChange={(e) => setProjectSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-3 bg-[#2a2a2a] border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500"
+              />
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {visualizerProjects.map((project) => (
+              {filteredProjects.map((project) => (
                 <div
                   key={project.id}
                   className={`relative rounded-2xl bg-[#2a2a2a] overflow-hidden cursor-pointer transition-all duration-300 ${
@@ -271,12 +299,68 @@ const PluginDetailPage = ({ pluginId, onBack }) => {
                   </div>
                 </div>
               ))}
+
+              {/* Create Project Button */}
+              <div
+                className="relative rounded-2xl bg-[#2a2a2a] overflow-hidden cursor-pointer transition-all duration-300 hover:bg-[#333] hover:scale-105 border-2 border-dashed border-gray-500"
+                onClick={() =>
+                  window.open(
+                    'https://visualizer.dev.reearth.io/dashboard/01jz7fqyph3wh2gkas313ymm3j',
+                    '_blank'
+                  )
+                }
+              >
+                {/* Create Project Content */}
+                <div className="aspect-video bg-[#333] flex items-center justify-center">
+                  <div className="flex flex-col items-center justify-center text-gray-400">
+                    <Plus className="w-12 h-12 mb-2" />
+                    <span className="text-sm font-medium">New Project</span>
+                  </div>
+                </div>
+
+                {/* Project Info */}
+                <div className="p-4 flex items-center justify-center">
+                  <div className="text-center">
+                    <h3 className="text-gray-300 font-medium text-lg">
+                      Create Project
+                    </h3>
+                  </div>
+                </div>
+              </div>
+
+              {/* No results message */}
+              {filteredProjects.length === 0 && projectSearchTerm && (
+                <div className="col-span-full text-center py-8">
+                  <p className="text-gray-400 text-lg">
+                    No projects found matching "{projectSearchTerm}"
+                  </p>
+                  <p className="text-gray-500 text-sm mt-2">
+                    Try adjusting your search terms or create a new project
+                  </p>
+                </div>
+              )}
             </div>
 
-            <div className="flex justify-end mt-8">
+            <div className="flex justify-between mt-8">
               <Button
                 variant="outline"
-                onClick={() => setShowProjectModal(false)}
+                onClick={() =>
+                  window.open(
+                    'https://visualizer.dev.reearth.io/dashboard/01jz7fqyph3wh2gkas313ymm3j',
+                    '_blank'
+                  )
+                }
+                className="bg-transparent border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Create Project
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setProjectSearchTerm('');
+                  setShowProjectModal(false);
+                }}
                 className="bg-transparent border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white"
               >
                 Cancel
