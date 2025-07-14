@@ -20,8 +20,12 @@ import {
   Heart,
   Share2,
   X,
-  Plus,
-  Search,
+  Shield,
+  Lock,
+  Eye,
+  Database,
+  Globe,
+  AlertTriangle,
 } from 'lucide-react';
 
 // Mock Visualizer projects styled like the image
@@ -101,6 +105,39 @@ const PluginDetailPage = ({ pluginId, onBack }) => {
       'Internet connection required',
       'WebGL support (for 3D features)',
     ],
+    permissions: {
+      dataAccess: [
+        'Read access to spatial layers and datasets',
+        'Write access to user-created content',
+        'Access to project configuration settings',
+        'Read metadata from imported files'
+      ],
+      networkAccess: [
+        'Connect to external mapping services (OpenStreetMap, satellite imagery)',
+        'Download elevation data from government databases',
+        'Access real-time weather data APIs',
+        'Sync data with cloud storage services'
+      ],
+      systemAccess: [
+        'Access to local file system for import/export',
+        'Use system clipboard for data transfer',
+        'Access to graphics hardware (GPU) for 3D rendering',
+        'Temporary storage for processing large datasets'
+      ],
+      dataHandling: {
+        collection: 'This plugin collects usage analytics to improve performance and user experience. No personal data is collected.',
+        storage: 'Spatial data is processed locally and temporarily cached. User preferences are stored locally in browser storage.',
+        sharing: 'No data is shared with third parties without explicit user consent. Analytics data is anonymized.',
+        retention: 'Cached data is automatically cleared after 24 hours. User settings persist until manually cleared.',
+        encryption: 'All network communications use HTTPS encryption. Local data storage uses browser security standards.'
+      },
+      compliance: [
+        'GDPR compliant data handling',
+        'SOC 2 Type II security standards',
+        'ISO 27001 information security management',
+        'Regular security audits and vulnerability assessments'
+      ]
+    },
     changelog: [
       {
         version: plugin.version,
@@ -516,7 +553,7 @@ const PluginDetailPage = ({ pluginId, onBack }) => {
         {/* Tabs */}
         <div className="border-b-2">
           <nav className="flex space-x-12">
-            {['overview', 'screenshots', 'changelog', 'requirements'].map(
+            {['overview', 'screenshots', 'changelog', 'requirements', 'permissions'].map(
               (tab) => (
                 <button
                   key={tab}
@@ -668,6 +705,168 @@ const PluginDetailPage = ({ pluginId, onBack }) => {
                 </div>
               </CardContent>
             </Card>
+          )}
+
+          {activeTab === 'permissions' && (
+            <div className="space-y-6">
+              {/* Permissions Overview */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center space-x-3 text-2xl">
+                    <Shield className="h-6 w-6 text-blue-500" />
+                    <span>Permissions & Privacy</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-lg text-muted-foreground mb-6">
+                    This plugin requires the following permissions to function properly. 
+                    All data handling follows industry security standards and privacy best practices.
+                  </p>
+                  
+                  {/* Data Access Permissions */}
+                  <div className="mb-8">
+                    <h3 className="flex items-center space-x-2 text-xl font-bold mb-4">
+                      <Database className="h-5 w-5 text-green-500" />
+                      <span>Data Access</span>
+                    </h3>
+                    <ul className="space-y-2">
+                      {pluginInfo.permissions.dataAccess.map((permission, index) => (
+                        <li key={index} className="flex items-start space-x-3">
+                          <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+                          <span className="text-lg">{permission}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Network Access */}
+                  <div className="mb-8">
+                    <h3 className="flex items-center space-x-2 text-xl font-bold mb-4">
+                      <Globe className="h-5 w-5 text-blue-500" />
+                      <span>Network Access</span>
+                    </h3>
+                    <ul className="space-y-2">
+                      {pluginInfo.permissions.networkAccess.map((permission, index) => (
+                        <li key={index} className="flex items-start space-x-3">
+                          <CheckCircle className="h-5 w-5 text-blue-500 mt-0.5 flex-shrink-0" />
+                          <span className="text-lg">{permission}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* System Access */}
+                  <div className="mb-8">
+                    <h3 className="flex items-center space-x-2 text-xl font-bold mb-4">
+                      <HardDrive className="h-5 w-5 text-purple-500" />
+                      <span>System Access</span>
+                    </h3>
+                    <ul className="space-y-2">
+                      {pluginInfo.permissions.systemAccess.map((permission, index) => (
+                        <li key={index} className="flex items-start space-x-3">
+                          <CheckCircle className="h-5 w-5 text-purple-500 mt-0.5 flex-shrink-0" />
+                          <span className="text-lg">{permission}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Data Handling & Privacy */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center space-x-3 text-2xl">
+                    <Lock className="h-6 w-6 text-amber-500" />
+                    <span>Data Handling & Privacy</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div>
+                    <h4 className="flex items-center space-x-2 font-bold text-lg mb-2">
+                      <Eye className="h-5 w-5 text-amber-500" />
+                      <span>Data Collection</span>
+                    </h4>
+                    <p className="text-lg text-muted-foreground">
+                      {pluginInfo.permissions.dataHandling.collection}
+                    </p>
+                  </div>
+
+                  <div>
+                    <h4 className="flex items-center space-x-2 font-bold text-lg mb-2">
+                      <Database className="h-5 w-5 text-amber-500" />
+                      <span>Data Storage</span>
+                    </h4>
+                    <p className="text-lg text-muted-foreground">
+                      {pluginInfo.permissions.dataHandling.storage}
+                    </p>
+                  </div>
+
+                  <div>
+                    <h4 className="flex items-center space-x-2 font-bold text-lg mb-2">
+                      <Share2 className="h-5 w-5 text-amber-500" />
+                      <span>Data Sharing</span>
+                    </h4>
+                    <p className="text-lg text-muted-foreground">
+                      {pluginInfo.permissions.dataHandling.sharing}
+                    </p>
+                  </div>
+
+                  <div>
+                    <h4 className="flex items-center space-x-2 font-bold text-lg mb-2">
+                      <Calendar className="h-5 w-5 text-amber-500" />
+                      <span>Data Retention</span>
+                    </h4>
+                    <p className="text-lg text-muted-foreground">
+                      {pluginInfo.permissions.dataHandling.retention}
+                    </p>
+                  </div>
+
+                  <div>
+                    <h4 className="flex items-center space-x-2 font-bold text-lg mb-2">
+                      <Shield className="h-5 w-5 text-amber-500" />
+                      <span>Data Encryption</span>
+                    </h4>
+                    <p className="text-lg text-muted-foreground">
+                      {pluginInfo.permissions.dataHandling.encryption}
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Security & Compliance */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center space-x-3 text-2xl">
+                    <AlertTriangle className="h-6 w-6 text-red-500" />
+                    <span>Security & Compliance</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-lg text-muted-foreground mb-4">
+                    This plugin adheres to the following security standards and compliance requirements:
+                  </p>
+                  <ul className="space-y-2">
+                    {pluginInfo.permissions.compliance.map((standard, index) => (
+                      <li key={index} className="flex items-start space-x-3">
+                        <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span className="text-lg">{standard}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  
+                  <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                    <h4 className="font-bold text-lg mb-2 text-blue-800 dark:text-blue-200">
+                      Need Help?
+                    </h4>
+                    <p className="text-blue-700 dark:text-blue-300">
+                      If you have questions about data handling or security practices, 
+                      please contact the plugin developer or review our privacy policy.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           )}
         </div>
       </div>
