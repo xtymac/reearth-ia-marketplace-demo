@@ -59,6 +59,7 @@ const PluginDetailPage = ({ pluginId, onBack }) => {
   const [showNotification, setShowNotification] = useState(false);
   const [notificationData, setNotificationData] = useState({});
   const [projectSearchTerm, setProjectSearchTerm] = useState('');
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
 
   // Find the plugin by ID
   const plugin = mockPlugins.find((p) => p.id === pluginId);
@@ -112,33 +113,38 @@ const PluginDetailPage = ({ pluginId, onBack }) => {
         'Read access to spatial layers and datasets',
         'Write access to user-created content',
         'Access to project configuration settings',
-        'Read metadata from imported files'
+        'Read metadata from imported files',
       ],
       networkAccess: [
         'Connect to external mapping services (OpenStreetMap, satellite imagery)',
         'Download elevation data from government databases',
         'Access real-time weather data APIs',
-        'Sync data with cloud storage services'
+        'Sync data with cloud storage services',
       ],
       systemAccess: [
         'Access to local file system for import/export',
         'Use system clipboard for data transfer',
         'Access to graphics hardware (GPU) for 3D rendering',
-        'Temporary storage for processing large datasets'
+        'Temporary storage for processing large datasets',
       ],
       dataHandling: {
-        collection: 'This plugin collects usage analytics to improve performance and user experience. No personal data is collected.',
-        storage: 'Spatial data is processed locally and temporarily cached. User preferences are stored locally in browser storage.',
-        sharing: 'No data is shared with third parties without explicit user consent. Analytics data is anonymized.',
-        retention: 'Cached data is automatically cleared after 24 hours. User settings persist until manually cleared.',
-        encryption: 'All network communications use HTTPS encryption. Local data storage uses browser security standards.'
+        collection:
+          'This plugin collects usage analytics to improve performance and user experience. No personal data is collected.',
+        storage:
+          'Spatial data is processed locally and temporarily cached. User preferences are stored locally in browser storage.',
+        sharing:
+          'No data is shared with third parties without explicit user consent. Analytics data is anonymized.',
+        retention:
+          'Cached data is automatically cleared after 24 hours. User settings persist until manually cleared.',
+        encryption:
+          'All network communications use HTTPS encryption. Local data storage uses browser security standards.',
       },
       compliance: [
         'GDPR compliant data handling',
         'SOC 2 Type II security standards',
         'ISO 27001 information security management',
-        'Regular security audits and vulnerability assessments'
-      ]
+        'Regular security audits and vulnerability assessments',
+      ],
     },
     changelog: [
       {
@@ -177,10 +183,18 @@ const PluginDetailPage = ({ pluginId, onBack }) => {
 
   const handleInstall = () => {
     setProjectSearchTerm(''); // Clear search when opening modal
+    setAgreedToTerms(false); // Reset terms agreement when opening modal
     setShowProjectModal(true);
   };
 
   const handleProjectInstall = (project) => {
+    if (!agreedToTerms) {
+      alert(
+        'Please agree to the Terms of Service and Privacy Policy before installing the plugin.'
+      );
+      return;
+    }
+
     setInstallingProject(project.id);
     setTimeout(() => {
       setShowProjectModal(false);
@@ -254,6 +268,7 @@ const PluginDetailPage = ({ pluginId, onBack }) => {
                 size="sm"
                 onClick={() => {
                   setProjectSearchTerm('');
+                  setAgreedToTerms(false);
                   setShowProjectModal(false);
                 }}
                 className="text-gray-400 hover:text-white"
@@ -278,10 +293,12 @@ const PluginDetailPage = ({ pluginId, onBack }) => {
               {filteredProjects.map((project) => (
                 <div
                   key={project.id}
-                  className={`relative rounded-2xl bg-[#2a2a2a] overflow-hidden cursor-pointer transition-all duration-300 ${
+                  className={`relative rounded-2xl bg-[#2a2a2a] overflow-hidden transition-all duration-300 ${
                     installingProject === project.id
                       ? 'ring-2 ring-green-500 bg-green-900/20'
-                      : 'hover:bg-[#333] hover:scale-105'
+                      : agreedToTerms
+                      ? 'cursor-pointer hover:bg-[#333] hover:scale-105'
+                      : 'cursor-not-allowed opacity-50'
                   }`}
                   onClick={() => handleProjectInstall(project)}
                 >
@@ -380,6 +397,37 @@ const PluginDetailPage = ({ pluginId, onBack }) => {
               )}
             </div>
 
+            {/* Terms & Privacy Checkbox */}
+            <div className="mt-6 flex items-start space-x-3">
+              <input
+                type="checkbox"
+                id="terms-checkbox"
+                checked={agreedToTerms}
+                onChange={(e) => setAgreedToTerms(e.target.checked)}
+                className="mt-1 w-4 h-4 text-blue-600 bg-gray-800 border-gray-600 rounded focus:ring-blue-500 focus:ring-2"
+              />
+              <label htmlFor="terms-checkbox" className="text-sm text-gray-300">
+                I agree to the{' '}
+                <a
+                  href="https://dev.reearth.io/terms-of-service"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-400 hover:text-blue-300 underline"
+                >
+                  Terms of Service
+                </a>{' '}
+                and{' '}
+                <a
+                  href="https://dev.reearth.io/privacy-policy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-400 hover:text-blue-300 underline"
+                >
+                  Privacy Policy
+                </a>
+              </label>
+            </div>
+
             <div className="flex justify-between mt-8">
               <Button
                 variant="outline"
@@ -398,6 +446,7 @@ const PluginDetailPage = ({ pluginId, onBack }) => {
                 variant="outline"
                 onClick={() => {
                   setProjectSearchTerm('');
+                  setAgreedToTerms(false);
                   setShowProjectModal(false);
                 }}
                 className="bg-transparent border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white"
@@ -555,21 +604,25 @@ const PluginDetailPage = ({ pluginId, onBack }) => {
         {/* Tabs */}
         <div className="border-b-2">
           <nav className="flex space-x-12">
-            {['overview', 'screenshots', 'changelog', 'requirements', 'permissions'].map(
-              (tab) => (
-                <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
-                  className={`py-4 px-2 border-b-2 font-semibold text-lg transition-colors ${
-                    activeTab === tab
-                      ? 'border-primary text-primary'
-                      : 'border-transparent text-muted-foreground hover:text-foreground'
-                  }`}
-                >
-                  {tab.charAt(0).toUpperCase() + tab.slice(1)}
-                </button>
-              )
-            )}
+            {[
+              'overview',
+              'screenshots',
+              'changelog',
+              'requirements',
+              'permissions',
+            ].map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`py-4 px-2 border-b-2 font-semibold text-lg transition-colors ${
+                  activeTab === tab
+                    ? 'border-primary text-primary'
+                    : 'border-transparent text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                {tab.charAt(0).toUpperCase() + tab.slice(1)}
+              </button>
+            ))}
           </nav>
         </div>
 
@@ -714,35 +767,55 @@ const PluginDetailPage = ({ pluginId, onBack }) => {
               <CardContent className="space-y-8 pt-6">
                 {/* Main Title */}
                 <div>
-                  <h2 className="text-2xl font-bold mb-6">🔐 Permissions & Privacy（权限与隐私）</h2>
+                  <h2 className="text-2xl font-bold mb-6">
+                    🔐 Permissions & Privacy（权限与隐私）
+                  </h2>
                 </div>
 
                 {/* Required Permissions Section */}
                 <div>
-                  <h3 className="text-xl font-bold mb-4">Required Permissions</h3>
+                  <h3 className="text-xl font-bold mb-4">
+                    Required Permissions
+                  </h3>
                   <p className="text-lg text-muted-foreground mb-6">
-                    This plugin runs in a secure sandbox (iframe) and declares the following permissions in its reearth.yml manifest:
+                    This plugin runs in a secure sandbox (iframe) and declares
+                    the following permissions in its reearth.yml manifest:
                   </p>
-                  
+
                   <div className="space-y-4 ml-4">
                     <div>
                       <p className="text-lg">
-                        <span className="font-mono bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">project-data.read</span>: 
-                        Read current project's map and layer configurations for rendering purposes.
+                        <span className="font-mono bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">
+                          project-data.read
+                        </span>
+                        : Read current project's map and layer configurations
+                        for rendering purposes.
                       </p>
                     </div>
-                    
+
                     <div>
                       <p className="text-lg">
-                        <span className="text-muted-foreground">(Optional)</span> <span className="font-mono bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">geolocation</span>: 
-                        Access user's current location, used only when the "Enable Location" feature is triggered.
+                        <span className="text-muted-foreground">
+                          (Optional)
+                        </span>{' '}
+                        <span className="font-mono bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">
+                          geolocation
+                        </span>
+                        : Access user's current location, used only when the
+                        "Enable Location" feature is triggered.
                       </p>
                     </div>
-                    
+
                     <div>
                       <p className="text-lg">
-                        <span className="text-muted-foreground">(Optional)</span> <span className="font-mono bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">network</span>: 
-                        Fetch external resources (e.g., tile layers, geoJSON) when user explicitly invokes "Load from URL".
+                        <span className="text-muted-foreground">
+                          (Optional)
+                        </span>{' '}
+                        <span className="font-mono bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">
+                          network
+                        </span>
+                        : Fetch external resources (e.g., tile layers, geoJSON)
+                        when user explicitly invokes "Load from URL".
                       </p>
                     </div>
                   </div>
@@ -750,34 +823,44 @@ const PluginDetailPage = ({ pluginId, onBack }) => {
 
                 {/* Data Handling & Privacy Section */}
                 <div>
-                  <h3 className="text-xl font-bold mb-4">🛡 Data Handling & Privacy（数据处理与隐私）</h3>
-                  
+                  <h3 className="text-xl font-bold mb-4">
+                    🛡 Data Handling & Privacy（数据处理与隐私）
+                  </h3>
+
                   <div className="space-y-4">
                     <div className="flex items-start space-x-3">
                       <span className="text-green-500 text-xl">✔️</span>
                       <p className="text-lg">
-                        All UI scripts run inside a sandboxed environment and cannot access your account data or storage outside of this plugin.
+                        All UI scripts run inside a sandboxed environment and
+                        cannot access your account data or storage outside of
+                        this plugin.
                       </p>
                     </div>
-                    
+
                     <div className="flex items-start space-x-3">
                       <span className="text-green-500 text-xl">✔️</span>
                       <p className="text-lg">
-                        The plugin does not collect or store any personal data. Any fetched or user-provided data will not be shared or persisted.
+                        The plugin does not collect or store any personal data.
+                        Any fetched or user-provided data will not be shared or
+                        persisted.
                       </p>
                     </div>
-                    
+
                     <div className="flex items-start space-x-3">
                       <span className="text-yellow-500 text-xl">❗</span>
                       <p className="text-lg">
-                        Optional permissions (geolocation, network) are only requested when users activate the related feature; they are not requested during installation.
+                        Optional permissions (geolocation, network) are only
+                        requested when users activate the related feature; they
+                        are not requested during installation.
                       </p>
                     </div>
-                    
+
                     <div className="flex items-start space-x-3">
                       <span className="text-red-500 text-xl">🛑</span>
                       <p className="text-lg">
-                        You remain in control—each permission request is accompanied by a user prompt and can be revoked at any time from the plugin settings panel.
+                        You remain in control—each permission request is
+                        accompanied by a user prompt and can be revoked at any
+                        time from the plugin settings panel.
                       </p>
                     </div>
                   </div>
