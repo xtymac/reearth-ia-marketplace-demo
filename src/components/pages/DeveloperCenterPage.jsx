@@ -1,23 +1,30 @@
 import React, { useState } from 'react';
 import { Button } from '../ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '../ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  CardFooter,
+} from '../ui/card';
 import { Badge } from '../ui/badge';
 import { Select } from '../ui/select';
 import { useUser } from '../../contexts/UserContext';
 import { userRoles, platforms, functions } from '../../data/mockPlugins';
-import { 
-  Code, 
-  Upload, 
-  FileText, 
-  Package, 
-  Clock, 
-  CheckCircle, 
-  XCircle, 
+import {
+  Code,
+  Upload,
+  FileText,
+  Package,
+  Clock,
+  CheckCircle,
+  XCircle,
   AlertCircle,
   Eye,
   Edit,
   Trash2,
-  Plus
+  Plus,
 } from 'lucide-react';
 
 const DeveloperCenterPage = () => {
@@ -29,8 +36,9 @@ const DeveloperCenterPage = () => {
     function: '',
     description: '',
     version: '1.0.0',
-    file: null
+    file: null,
   });
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
 
   // Mock submitted plugins for the developer
   const mockSubmittedPlugins = [
@@ -44,7 +52,7 @@ const DeveloperCenterPage = () => {
       submittedDate: '2024-01-10',
       reviewDate: '2024-01-15',
       downloads: 1247,
-      feedback: 'Great plugin! Well documented and performs efficiently.'
+      feedback: 'Great plugin! Well documented and performs efficiently.',
     },
     {
       id: 'dev-2',
@@ -56,7 +64,7 @@ const DeveloperCenterPage = () => {
       submittedDate: '2024-01-18',
       reviewDate: null,
       downloads: 0,
-      feedback: null
+      feedback: null,
     },
     {
       id: 'dev-3',
@@ -68,59 +76,81 @@ const DeveloperCenterPage = () => {
       submittedDate: '2024-01-05',
       reviewDate: '2024-01-12',
       downloads: 0,
-      feedback: 'Please improve error handling and add more comprehensive documentation.'
-    }
+      feedback:
+        'Please improve error handling and add more comprehensive documentation.',
+    },
   ];
 
   const handleUploadFormChange = (field, value) => {
-    setUploadForm(prev => ({
+    setUploadForm((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   };
 
   const handleFileChange = (e) => {
-    setUploadForm(prev => ({
+    setUploadForm((prev) => ({
       ...prev,
-      file: e.target.files[0]
+      file: e.target.files[0],
     }));
   };
 
   const handleSubmitPlugin = () => {
-    if (!uploadForm.name || !uploadForm.platform || !uploadForm.function || !uploadForm.description) {
+    if (
+      !uploadForm.name ||
+      !uploadForm.platform ||
+      !uploadForm.function ||
+      !uploadForm.description
+    ) {
       alert('Please fill in all required fields.');
       return;
     }
-    
-    alert(`Plugin "${uploadForm.name}" submitted for review! (This is a mock action)`);
+
+    if (!agreedToTerms) {
+      alert(
+        'Please agree to the Terms of Service and Privacy Policy before submitting your plugin.'
+      );
+      return;
+    }
+
+    alert(
+      `Plugin "${uploadForm.name}" submitted for review! (This is a mock action)`
+    );
     setUploadForm({
       name: '',
       platform: '',
       function: '',
       description: '',
       version: '1.0.0',
-      file: null
+      file: null,
     });
+    setAgreedToTerms(false);
     setShowUploadForm(false);
   };
 
   const getStatusBadge = (status) => {
     switch (status) {
       case 'approved':
-        return <Badge className="bg-green-100 text-green-800 border-green-200">
-          <CheckCircle className="h-3 w-3 mr-1" />
-          Approved
-        </Badge>;
+        return (
+          <Badge className="bg-green-100 text-green-800 border-green-200">
+            <CheckCircle className="h-3 w-3 mr-1" />
+            Approved
+          </Badge>
+        );
       case 'pending':
-        return <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200">
-          <Clock className="h-3 w-3 mr-1" />
-          Pending Review
-        </Badge>;
+        return (
+          <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200">
+            <Clock className="h-3 w-3 mr-1" />
+            Pending Review
+          </Badge>
+        );
       case 'rejected':
-        return <Badge className="bg-red-100 text-red-800 border-red-200">
-          <XCircle className="h-3 w-3 mr-1" />
-          Rejected
-        </Badge>;
+        return (
+          <Badge className="bg-red-100 text-red-800 border-red-200">
+            <XCircle className="h-3 w-3 mr-1" />
+            Rejected
+          </Badge>
+        );
       default:
         return null;
     }
@@ -128,10 +158,14 @@ const DeveloperCenterPage = () => {
 
   const getPlatformColor = (platform) => {
     switch (platform) {
-      case 'Visualizer': return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'CMS': return 'bg-green-100 text-green-800 border-green-200';
-      case 'Flow': return 'bg-purple-100 text-purple-800 border-purple-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+      case 'Visualizer':
+        return 'bg-blue-100 text-blue-800 border-blue-200';
+      case 'CMS':
+        return 'bg-green-100 text-green-800 border-green-200';
+      case 'Flow':
+        return 'bg-purple-100 text-purple-800 border-purple-200';
+      default:
+        return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   };
 
@@ -160,14 +194,20 @@ const DeveloperCenterPage = () => {
           </p>
         </div>
         <div className="flex items-center space-x-2">
-          <Badge variant={currentUser.role === userRoles.DEVELOPER ? "default" : "outline"}>
+          <Badge
+            variant={
+              currentUser.role === userRoles.DEVELOPER ? 'default' : 'outline'
+            }
+          >
             {currentUser.role}
           </Badge>
           {currentUser.role !== userRoles.DEVELOPER && (
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               size="sm"
-              onClick={() => alert('Role switching functionality would be implemented here')}
+              onClick={() =>
+                alert('Role switching functionality would be implemented here')
+              }
             >
               Become Developer
             </Button>
@@ -179,24 +219,38 @@ const DeveloperCenterPage = () => {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
           <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-center">{mockSubmittedPlugins.length}</div>
-            <div className="text-xs text-muted-foreground text-center">Submitted Plugins</div>
+            <div className="text-2xl font-bold text-center">
+              {mockSubmittedPlugins.length}
+            </div>
+            <div className="text-xs text-muted-foreground text-center">
+              Submitted Plugins
+            </div>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6">
             <div className="text-2xl font-bold text-center text-green-600">
-              {mockSubmittedPlugins.filter(p => p.status === 'approved').length}
+              {
+                mockSubmittedPlugins.filter((p) => p.status === 'approved')
+                  .length
+              }
             </div>
-            <div className="text-xs text-muted-foreground text-center">Approved</div>
+            <div className="text-xs text-muted-foreground text-center">
+              Approved
+            </div>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6">
             <div className="text-2xl font-bold text-center text-yellow-600">
-              {mockSubmittedPlugins.filter(p => p.status === 'pending').length}
+              {
+                mockSubmittedPlugins.filter((p) => p.status === 'pending')
+                  .length
+              }
             </div>
-            <div className="text-xs text-muted-foreground text-center">Pending</div>
+            <div className="text-xs text-muted-foreground text-center">
+              Pending
+            </div>
           </CardContent>
         </Card>
         <Card>
@@ -204,7 +258,9 @@ const DeveloperCenterPage = () => {
             <div className="text-2xl font-bold text-center">
               {mockSubmittedPlugins.reduce((sum, p) => sum + p.downloads, 0)}
             </div>
-            <div className="text-xs text-muted-foreground text-center">Total Downloads</div>
+            <div className="text-xs text-muted-foreground text-center">
+              Total Downloads
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -222,8 +278,11 @@ const DeveloperCenterPage = () => {
                 Submit a new plugin for review and publication
               </CardDescription>
             </div>
-            <Button 
-              onClick={() => setShowUploadForm(!showUploadForm)}
+            <Button
+              onClick={() => {
+                setAgreedToTerms(false);
+                setShowUploadForm(!showUploadForm);
+              }}
               className="flex items-center space-x-2"
             >
               <Plus className="h-4 w-4" />
@@ -242,7 +301,9 @@ const DeveloperCenterPage = () => {
                   placeholder="Enter plugin name"
                   className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm"
                   value={uploadForm.name}
-                  onChange={(e) => handleUploadFormChange('name', e.target.value)}
+                  onChange={(e) =>
+                    handleUploadFormChange('name', e.target.value)
+                  }
                 />
               </div>
 
@@ -250,29 +311,37 @@ const DeveloperCenterPage = () => {
                 <label className="text-sm font-medium">Platform *</label>
                 <Select
                   value={uploadForm.platform}
-                  onChange={(e) => handleUploadFormChange('platform', e.target.value)}
+                  onChange={(e) =>
+                    handleUploadFormChange('platform', e.target.value)
+                  }
                 >
                   <option value="">Select platform</option>
-                  {platforms.filter(p => p !== 'All').map(platform => (
-                    <option key={platform} value={platform}>
-                      {platform}
-                    </option>
-                  ))}
+                  {platforms
+                    .filter((p) => p !== 'All')
+                    .map((platform) => (
+                      <option key={platform} value={platform}>
+                        {platform}
+                      </option>
+                    ))}
                 </Select>
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium">Function *</label>
+                <label className="text-sm font-medium">Category *</label>
                 <Select
                   value={uploadForm.function}
-                  onChange={(e) => handleUploadFormChange('function', e.target.value)}
+                  onChange={(e) =>
+                    handleUploadFormChange('function', e.target.value)
+                  }
                 >
                   <option value="">Select function</option>
-                  {functions.filter(f => f !== 'All').map(func => (
-                    <option key={func} value={func}>
-                      {func}
-                    </option>
-                  ))}
+                  {functions
+                    .filter((f) => f !== 'All')
+                    .map((func) => (
+                      <option key={func} value={func}>
+                        {func}
+                      </option>
+                    ))}
                 </Select>
               </div>
 
@@ -283,7 +352,9 @@ const DeveloperCenterPage = () => {
                   placeholder="1.0.0"
                   className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm"
                   value={uploadForm.version}
-                  onChange={(e) => handleUploadFormChange('version', e.target.value)}
+                  onChange={(e) =>
+                    handleUploadFormChange('version', e.target.value)
+                  }
                 />
               </div>
 
@@ -293,12 +364,16 @@ const DeveloperCenterPage = () => {
                   placeholder="Describe your plugin's functionality and features"
                   className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm min-h-[80px]"
                   value={uploadForm.description}
-                  onChange={(e) => handleUploadFormChange('description', e.target.value)}
+                  onChange={(e) =>
+                    handleUploadFormChange('description', e.target.value)
+                  }
                 />
               </div>
 
               <div className="space-y-2 md:col-span-2">
-                <label className="text-sm font-medium">Plugin File (.zip)</label>
+                <label className="text-sm font-medium">
+                  Plugin File (.zip)
+                </label>
                 <input
                   type="file"
                   accept=".zip"
@@ -308,11 +383,57 @@ const DeveloperCenterPage = () => {
               </div>
             </div>
 
+            {/* Terms & Privacy Checkbox */}
+            <div className="mt-6 flex items-start space-x-3">
+              <input
+                type="checkbox"
+                id="dev-terms-checkbox"
+                checked={agreedToTerms}
+                onChange={(e) => setAgreedToTerms(e.target.checked)}
+                className="mt-1 w-4 h-4 text-blue-600 bg-background border-input rounded focus:ring-blue-500 focus:ring-2"
+              />
+              <label
+                htmlFor="dev-terms-checkbox"
+                className="text-sm text-muted-foreground"
+              >
+                I agree to the{' '}
+                <a
+                  href="https://dev.reearth.io/terms-of-service"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:text-blue-500 underline"
+                >
+                  Terms of Service
+                </a>{' '}
+                and{' '}
+                <a
+                  href="https://dev.reearth.io/privacy-policy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:text-blue-500 underline"
+                >
+                  Privacy Policy
+                </a>
+              </label>
+            </div>
+
             <div className="flex justify-end space-x-2 mt-6">
-              <Button variant="outline" onClick={() => setShowUploadForm(false)}>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setAgreedToTerms(false);
+                  setShowUploadForm(false);
+                }}
+              >
                 Cancel
               </Button>
-              <Button onClick={handleSubmitPlugin}>
+              <Button
+                onClick={handleSubmitPlugin}
+                disabled={!agreedToTerms}
+                className={
+                  !agreedToTerms ? 'opacity-50 cursor-not-allowed' : ''
+                }
+              >
                 Submit for Review
               </Button>
             </div>
@@ -323,7 +444,7 @@ const DeveloperCenterPage = () => {
       {/* Submitted Plugins */}
       <div className="space-y-4">
         <h2 className="text-2xl font-bold">My Submitted Plugins</h2>
-        
+
         {mockSubmittedPlugins.length > 0 ? (
           <div className="space-y-4">
             {mockSubmittedPlugins.map((plugin) => (
@@ -333,7 +454,8 @@ const DeveloperCenterPage = () => {
                     <div className="flex-1">
                       <CardTitle className="text-lg">{plugin.name}</CardTitle>
                       <CardDescription className="mt-1">
-                        Version {plugin.version} • Submitted {plugin.submittedDate}
+                        Version {plugin.version} • Submitted{' '}
+                        {plugin.submittedDate}
                       </CardDescription>
                     </div>
                     <div className="flex items-center space-x-2">
@@ -348,22 +470,34 @@ const DeveloperCenterPage = () => {
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                      <div className="text-sm font-medium text-muted-foreground">Function</div>
+                      <div className="text-sm font-medium text-muted-foreground">
+                        Function
+                      </div>
                       <div>{plugin.function}</div>
                     </div>
                     <div>
-                      <div className="text-sm font-medium text-muted-foreground">Downloads</div>
+                      <div className="text-sm font-medium text-muted-foreground">
+                        Downloads
+                      </div>
                       <div>{plugin.downloads.toLocaleString()}</div>
                     </div>
                     <div>
-                      <div className="text-sm font-medium text-muted-foreground">Review Status</div>
-                      <div>{plugin.reviewDate ? `Reviewed ${plugin.reviewDate}` : 'Awaiting review'}</div>
+                      <div className="text-sm font-medium text-muted-foreground">
+                        Review Status
+                      </div>
+                      <div>
+                        {plugin.reviewDate
+                          ? `Reviewed ${plugin.reviewDate}`
+                          : 'Awaiting review'}
+                      </div>
                     </div>
                   </div>
 
                   {plugin.feedback && (
                     <div className="mt-4 p-3 bg-muted/50 rounded-md">
-                      <div className="text-sm font-medium text-muted-foreground mb-1">Reviewer Feedback</div>
+                      <div className="text-sm font-medium text-muted-foreground mb-1">
+                        Reviewer Feedback
+                      </div>
                       <p className="text-sm">{plugin.feedback}</p>
                     </div>
                   )}
@@ -371,19 +505,27 @@ const DeveloperCenterPage = () => {
 
                 <CardFooter>
                   <div className="flex space-x-2">
-                    <Button variant="outline" size="sm" className="flex items-center space-x-1">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="flex items-center space-x-1"
+                    >
                       <Eye className="h-3 w-3" />
                       <span>View Details</span>
                     </Button>
                     {plugin.status !== 'approved' && (
-                      <Button variant="outline" size="sm" className="flex items-center space-x-1">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex items-center space-x-1"
+                      >
                         <Edit className="h-3 w-3" />
                         <span>Edit</span>
                       </Button>
                     )}
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
+                    <Button
+                      variant="outline"
+                      size="sm"
                       className="flex items-center space-x-1 text-destructive hover:text-destructive"
                     >
                       <Trash2 className="h-3 w-3" />
@@ -398,7 +540,9 @@ const DeveloperCenterPage = () => {
           <Card className="text-center py-12">
             <CardContent>
               <Package className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-              <h3 className="text-lg font-semibold mb-2">No plugins submitted yet</h3>
+              <h3 className="text-lg font-semibold mb-2">
+                No plugins submitted yet
+              </h3>
               <p className="text-muted-foreground mb-4">
                 Start building and sharing your plugins with the GIS community.
               </p>
@@ -445,4 +589,4 @@ const DeveloperCenterPage = () => {
   );
 };
 
-export default DeveloperCenterPage; 
+export default DeveloperCenterPage;
