@@ -25,7 +25,96 @@ import {
   Edit,
   Trash2,
   Plus,
+  Download,
 } from 'lucide-react';
+
+// Markdown Tab Editor Component
+const MarkdownTabEditor = ({ onExport }) => {
+  const [activeTab, setActiveTab] = useState('Overview');
+  const [tabContents, setTabContents] = useState({
+    Overview: '',
+    Screenshots: '',
+    Changelog: '',
+    Permissions: '',
+  });
+
+  const tabs = ['Overview', 'Screenshots', 'Changelog', 'Permissions'];
+
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+  };
+
+  const handleContentChange = (tab, content) => {
+    setTabContents((prev) => ({
+      ...prev,
+      [tab]: content,
+    }));
+  };
+
+  const handleExport = () => {
+    const exportContent = `:::tabs
+
+@tab Overview
+${tabContents.Overview}
+
+@tab Screenshots
+${tabContents.Screenshots}
+
+@tab Changelog
+${tabContents.Changelog}
+
+@tab Permissions
+${tabContents.Permissions}
+
+:::`;
+
+    onExport(exportContent);
+  };
+
+  return (
+    <div className="border border-input rounded-md">
+      {/* Tab Headers */}
+      <div className="flex border-b border-input bg-muted/50">
+        {tabs.map((tab) => (
+          <button
+            key={tab}
+            onClick={() => handleTabChange(tab)}
+            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+              activeTab === tab
+                ? 'border-blue-500 text-blue-600 bg-background'
+                : 'border-transparent text-muted-foreground hover:text-foreground hover:bg-muted'
+            }`}
+          >
+            {tab}
+          </button>
+        ))}
+      </div>
+
+      {/* Tab Content */}
+      <div className="p-4">
+        <textarea
+          value={tabContents[activeTab]}
+          onChange={(e) => handleContentChange(activeTab, e.target.value)}
+          placeholder={`Enter Markdown content for ${activeTab} tab...`}
+          className="w-full h-64 p-3 border border-input rounded-md bg-background text-sm font-mono resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        />
+      </div>
+
+      {/* Export Button */}
+      <div className="px-4 pb-4">
+        <Button
+          onClick={handleExport}
+          variant="outline"
+          size="sm"
+          className="flex items-center space-x-2"
+        >
+          <Download className="h-4 w-4" />
+          <span>Export Markdown</span>
+        </Button>
+      </div>
+    </div>
+  );
+};
 
 const DeveloperCenterPage = () => {
   const { currentUser } = useUser();
@@ -39,6 +128,7 @@ const DeveloperCenterPage = () => {
     file: null,
   });
   const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [showMarkdownEditor, setShowMarkdownEditor] = useState(false);
 
   // Mock submitted plugins for the developer
   const mockSubmittedPlugins = [
@@ -95,6 +185,15 @@ const DeveloperCenterPage = () => {
     }));
   };
 
+  const handleMarkdownExport = (exportedContent) => {
+    setUploadForm((prev) => ({
+      ...prev,
+      description: exportedContent,
+    }));
+    setShowMarkdownEditor(false);
+    alert('Markdown content has been exported to the description field!');
+  };
+
   const handleSubmitPlugin = () => {
     if (
       !uploadForm.name ||
@@ -125,6 +224,7 @@ const DeveloperCenterPage = () => {
       file: null,
     });
     setAgreedToTerms(false);
+    setShowMarkdownEditor(false);
     setShowUploadForm(false);
   };
 
@@ -281,6 +381,7 @@ const DeveloperCenterPage = () => {
             <Button
               onClick={() => {
                 setAgreedToTerms(false);
+                setShowMarkdownEditor(false);
                 setShowUploadForm(!showUploadForm);
               }}
               className="flex items-center space-x-2"
@@ -359,15 +460,34 @@ const DeveloperCenterPage = () => {
               </div>
 
               <div className="space-y-2 md:col-span-2">
-                <label className="text-sm font-medium">Description *</label>
-                <textarea
-                  placeholder="Describe your plugin's functionality and features"
-                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm min-h-[80px]"
-                  value={uploadForm.description}
-                  onChange={(e) =>
-                    handleUploadFormChange('description', e.target.value)
-                  }
-                />
+                <div className="flex items-center justify-between">
+                  <label className="text-sm font-medium">Description *</label>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowMarkdownEditor(!showMarkdownEditor)}
+                    className="flex items-center space-x-1"
+                  >
+                    <FileText className="h-3 w-3" />
+                    <span>
+                      {showMarkdownEditor ? 'Simple Editor' : 'Markdown Editor'}
+                    </span>
+                  </Button>
+                </div>
+
+                {showMarkdownEditor ? (
+                  <MarkdownTabEditor onExport={handleMarkdownExport} />
+                ) : (
+                  <textarea
+                    placeholder="Describe your plugin's functionality and features"
+                    className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm min-h-[80px]"
+                    value={uploadForm.description}
+                    onChange={(e) =>
+                      handleUploadFormChange('description', e.target.value)
+                    }
+                  />
+                )}
               </div>
 
               <div className="space-y-2 md:col-span-2">
@@ -422,6 +542,7 @@ const DeveloperCenterPage = () => {
                 variant="outline"
                 onClick={() => {
                   setAgreedToTerms(false);
+                  setShowMarkdownEditor(false);
                   setShowUploadForm(false);
                 }}
               >
