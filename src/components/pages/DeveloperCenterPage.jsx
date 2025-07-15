@@ -26,6 +26,7 @@ import {
   Trash2,
   Plus,
   Download,
+  Image,
 } from 'lucide-react';
 
 // Markdown Tab Editor Component
@@ -33,12 +34,12 @@ const MarkdownTabEditor = ({ onExport }) => {
   const [activeTab, setActiveTab] = useState('Overview');
   const [tabContents, setTabContents] = useState({
     Overview: '',
-    Screenshots: '',
     Changelog: '',
     Permissions: '',
   });
+  const [uploadedImages, setUploadedImages] = useState([]);
 
-  const tabs = ['Overview', 'Screenshots', 'Changelog', 'Permissions'];
+  const tabs = ['Overview', 'Changelog', 'Permissions'];
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
@@ -51,14 +52,42 @@ const MarkdownTabEditor = ({ onExport }) => {
     }));
   };
 
+  const handleImageUpload = (event) => {
+    const files = Array.from(event.target.files);
+    files.forEach((file) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const imageData = {
+          id: Date.now() + Math.random(),
+          name: file.name,
+          url: e.target.result,
+          file: file,
+        };
+        setUploadedImages((prev) => [...prev, imageData]);
+      };
+      reader.readAsDataURL(file);
+    });
+    event.target.value = ''; // Reset input
+  };
+
+  const handleRemoveImage = (imageId) => {
+    setUploadedImages((prev) => prev.filter((img) => img.id !== imageId));
+  };
+
+  const handleInsertImage = (image) => {
+    const imageMarkdown = `![${image.name}](${image.name})`;
+    const currentContent = tabContents[activeTab];
+    const newContent = currentContent
+      ? `${currentContent}\n\n${imageMarkdown}`
+      : imageMarkdown;
+    handleContentChange(activeTab, newContent);
+  };
+
   const handleExport = () => {
     const exportContent = `:::tabs
 
 @tab Overview
 ${tabContents.Overview}
-
-@tab Screenshots
-${tabContents.Screenshots}
 
 @tab Changelog
 ${tabContents.Changelog}
@@ -100,17 +129,66 @@ ${tabContents.Permissions}
         />
       </div>
 
-      {/* Export Button */}
-      <div className="px-4 pb-4">
-        <Button
-          onClick={handleExport}
-          variant="outline"
-          size="sm"
-          className="flex items-center space-x-2"
-        >
-          <Download className="h-4 w-4" />
-          <span>Export Markdown</span>
-        </Button>
+      {/* Image Upload Section */}
+      <div className="px-4 pb-4 border-t border-input">
+        <div className="flex items-center justify-between mb-3 pt-4">
+          <h4 className="text-sm font-medium">Screenshots</h4>
+          <div className="flex items-center space-x-2">
+            <input
+              type="file"
+              id="image-upload"
+              accept="image/*"
+              multiple
+              onChange={handleImageUpload}
+              className="hidden"
+            />
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => document.getElementById('image-upload').click()}
+              className="flex items-center space-x-1"
+            >
+              <Image className="h-3 w-3" />
+              <span>Upload Images</span>
+            </Button>
+          </div>
+        </div>
+
+        {/* Uploaded Images Preview */}
+        {uploadedImages.length > 0 && (
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+            {uploadedImages.map((image) => (
+              <div key={image.id} className="relative group">
+                <img
+                  src={image.url}
+                  alt={image.name}
+                  className="w-full h-20 object-cover rounded border border-input"
+                />
+                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-opacity flex items-center justify-center">
+                  <div className="opacity-0 group-hover:opacity-100 transition-opacity flex space-x-1">
+                    <button
+                      onClick={() => handleInsertImage(image)}
+                      className="text-white rounded px-2 py-1 text-xs font-medium hover:opacity-80"
+                      style={{ backgroundColor: '#50a1e5' }}
+                    >
+                      Insert
+                    </button>
+                    <button
+                      onClick={() => handleRemoveImage(image.id)}
+                      className="bg-red-500 text-white rounded px-2 py-1 text-xs font-medium hover:bg-red-600"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+                <div className="text-xs text-muted-foreground mt-1 truncate">
+                  {image.name}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -191,7 +269,6 @@ const DeveloperCenterPage = () => {
       description: exportedContent,
     }));
     setShowMarkdownEditor(false);
-    alert('Markdown content has been exported to the description field!');
   };
 
   const handleSubmitPlugin = () => {
