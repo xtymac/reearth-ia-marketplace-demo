@@ -210,22 +210,21 @@ const MarketplacePage = () => {
                   {plugin.platform.toUpperCase()}
                 </Badge> */}
 
-                <div className="grid grid-cols-2 gap-4 text-xs text-muted-foreground">
-                  <div className="flex items-center space-x-1">
-                    <Star className="h-3 w-3 fill-current text-yellow-500" />
-                    <span>{plugin.rating}</span>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-1 text-xs text-muted-foreground">
+                      <Star className="h-3 w-3 fill-current text-yellow-500" />
+                      <span>{plugin.rating}</span>
+                    </div>
+                    <div className="flex items-center space-x-1 text-xs text-muted-foreground">
+                      <Download className="h-3 w-3" />
+                      <span>{plugin.downloads.toLocaleString()}</span>
+                    </div>
                   </div>
-                  <div className="flex items-center space-x-1">
-                    <Download className="h-3 w-3" />
-                    <span>{plugin.downloads.toLocaleString()}</span>
-                  </div>
-                  <div className="flex items-center space-x-1">
-                    <HardDrive className="h-3 w-3" />
-                    <span>{plugin.size}</span>
-                  </div>
-                  <div className="flex items-center space-x-1">
-                    <Calendar className="h-3 w-3" />
-                    <span>v{plugin.version}</span>
+                  <div>
+                    <Badge variant="outline" className="text-xs">
+                      {plugin.function}
+                    </Badge>
                   </div>
                 </div>
               </div>
