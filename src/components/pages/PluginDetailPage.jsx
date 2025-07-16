@@ -59,7 +59,6 @@ const PluginDetailPage = ({ pluginId, onBack }) => {
   const [showNotification, setShowNotification] = useState(false);
   const [notificationData, setNotificationData] = useState({});
   const [projectSearchTerm, setProjectSearchTerm] = useState('');
-  const [agreedToTerms, setAgreedToTerms] = useState(false);
 
   // Find the plugin by ID
   const plugin = mockPlugins.find((p) => p.id === pluginId);
@@ -183,18 +182,10 @@ const PluginDetailPage = ({ pluginId, onBack }) => {
 
   const handleInstall = () => {
     setProjectSearchTerm(''); // Clear search when opening modal
-    setAgreedToTerms(false); // Reset terms agreement when opening modal
     setShowProjectModal(true);
   };
 
   const handleProjectInstall = (project) => {
-    if (!agreedToTerms) {
-      alert(
-        'Please agree to the Terms of Service and Privacy Policy before installing the plugin.'
-      );
-      return;
-    }
-
     setInstallingProject(project.id);
     setTimeout(() => {
       setShowProjectModal(false);
@@ -268,7 +259,6 @@ const PluginDetailPage = ({ pluginId, onBack }) => {
                 size="sm"
                 onClick={() => {
                   setProjectSearchTerm('');
-                  setAgreedToTerms(false);
                   setShowProjectModal(false);
                 }}
                 className="text-gray-400 hover:text-white"
@@ -296,9 +286,7 @@ const PluginDetailPage = ({ pluginId, onBack }) => {
                   className={`relative rounded-2xl bg-[#2a2a2a] overflow-hidden transition-all duration-300 ${
                     installingProject === project.id
                       ? 'ring-2 ring-green-500 bg-green-900/20'
-                      : agreedToTerms
-                      ? 'cursor-pointer hover:bg-[#333] hover:scale-105'
-                      : 'cursor-not-allowed opacity-50'
+                      : 'cursor-pointer hover:bg-[#333] hover:scale-105'
                   }`}
                   onClick={() => handleProjectInstall(project)}
                 >
@@ -397,56 +385,11 @@ const PluginDetailPage = ({ pluginId, onBack }) => {
               )}
             </div>
 
-            {/* Terms & Privacy Checkbox */}
-            <div className="mt-6 flex items-start space-x-3">
-              <input
-                type="checkbox"
-                id="terms-checkbox"
-                checked={agreedToTerms}
-                onChange={(e) => setAgreedToTerms(e.target.checked)}
-                className="mt-1 w-4 h-4 text-blue-600 bg-gray-800 border-gray-600 rounded focus:ring-blue-500 focus:ring-2"
-              />
-              <label htmlFor="terms-checkbox" className="text-sm text-gray-300">
-                I agree to the{' '}
-                <a
-                  href="https://dev.reearth.io/terms-of-service"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-400 hover:text-blue-300 underline"
-                >
-                  Terms of Service
-                </a>{' '}
-                and{' '}
-                <a
-                  href="https://dev.reearth.io/privacy-policy"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-400 hover:text-blue-300 underline"
-                >
-                  Privacy Policy
-                </a>
-              </label>
-            </div>
-
-            <div className="flex justify-between mt-8">
-              <Button
-                variant="outline"
-                onClick={() =>
-                  window.open(
-                    'https://visualizer.dev.reearth.io/dashboard/01jz7fqyph3wh2gkas313ymm3j',
-                    '_blank'
-                  )
-                }
-                className="bg-transparent border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Create Project
-              </Button>
+            <div className="flex justify-end mt-8">
               <Button
                 variant="outline"
                 onClick={() => {
                   setProjectSearchTerm('');
-                  setAgreedToTerms(false);
                   setShowProjectModal(false);
                 }}
                 className="bg-transparent border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white"
