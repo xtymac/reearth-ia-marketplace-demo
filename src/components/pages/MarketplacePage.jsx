@@ -27,6 +27,7 @@ import {
   Filter,
   CheckCircle,
   Package,
+  Image,
 } from 'lucide-react';
 
 const MarketplacePage = () => {
@@ -162,7 +163,7 @@ const MarketplacePage = () => {
         {filteredPlugins.map((plugin) => (
           <Card
             key={plugin.id}
-            className="flex flex-col hover:shadow-lg transition-shadow relative"
+            className="flex flex-col hover:shadow-lg transition-shadow relative overflow-hidden"
           >
             {/* Platform Badge Top Right */}
             <Badge
@@ -171,7 +172,16 @@ const MarketplacePage = () => {
             >
               {plugin.platform.toUpperCase()}
             </Badge>
-            <CardHeader>
+
+            {/* Image Placeholder */}
+            <div className="h-32 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+              <div className="text-center text-gray-400">
+                <Image className="h-8 w-8 mx-auto mb-1 opacity-50" />
+                <p className="text-xs font-medium">Plugin Preview</p>
+              </div>
+            </div>
+
+            <CardHeader className="pb-3">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <CardTitle className="text-lg flex items-center space-x-2">
@@ -196,21 +206,13 @@ const MarketplacePage = () => {
               </div>
             </CardHeader>
 
-            <CardContent className="flex-1">
-              <p className="text-sm text-muted-foreground mb-4">
+            <CardContent className="flex-1 py-3">
+              <p className="text-sm text-muted-foreground mb-3">
                 {plugin.description}
               </p>
 
               <div className="space-y-2">
-                {/* Remove platform badge from here */}
-                {/* <Badge
-                  variant={`platform-${plugin.platform.toLowerCase()}`}
-                  className="mr-2"
-                >
-                  {plugin.platform.toUpperCase()}
-                </Badge> */}
-
-                <div className="space-y-3">
+                <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-1 text-xs text-muted-foreground">
                       <Star className="h-3 w-3 fill-current text-yellow-500" />
@@ -230,7 +232,7 @@ const MarketplacePage = () => {
               </div>
             </CardContent>
 
-            <CardFooter className="pt-4">
+            <CardFooter className="pt-3">
               <div className="flex space-x-2 w-full">
                 {currentUser.isLoggedIn && !isPluginInstalled(plugin.id) ? (
                   <Button
