@@ -139,9 +139,9 @@ const MarketplacePage = () => {
               </Select>
             </div>
 
-            {/* Function Filter */}
+            {/* Category Filter */}
             <div className="space-y-2">
-              <label className="text-sm font-medium">Function</label>
+              <label className="text-sm font-medium">Category</label>
               <Select
                 value={functionFilter}
                 onChange={(e) => setFunctionFilter(e.target.value)}
