@@ -179,7 +179,17 @@ const MarketplacePage = () => {
                 src="/plugin-preview.png" 
                 alt={`${plugin.name} preview`}
                 className="w-full h-full object-cover"
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                  e.target.nextSibling.style.display = 'flex';
+                }}
               />
+              <div className="hidden absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
+                <div className="text-center text-gray-400">
+                  <Image className="h-8 w-8 mx-auto mb-1 opacity-50" />
+                  <p className="text-xs font-medium">Plugin Preview</p>
+                </div>
+              </div>
             </div>
 
             <CardHeader className="pb-3">
