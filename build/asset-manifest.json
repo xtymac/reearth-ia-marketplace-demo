@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/reearth-ia-marketplace-demo/static/css/main.0a8d6878.css",
-    "main.js": "/reearth-ia-marketplace-demo/static/js/main.3f219420.js",
+    "main.css": "/reearth-ia-marketplace-demo/static/css/main.ec742639.css",
+    "main.js": "/reearth-ia-marketplace-demo/static/js/main.da2ca238.js",
     "index.html": "/reearth-ia-marketplace-demo/index.html",
-    "main.0a8d6878.css.map": "/reearth-ia-marketplace-demo/static/css/main.0a8d6878.css.map",
-    "main.3f219420.js.map": "/reearth-ia-marketplace-demo/static/js/main.3f219420.js.map"
+    "main.ec742639.css.map": "/reearth-ia-marketplace-demo/static/css/main.ec742639.css.map",
+    "main.da2ca238.js.map": "/reearth-ia-marketplace-demo/static/js/main.da2ca238.js.map"
   },
   "entrypoints": [
-    "static/css/main.0a8d6878.css",
-    "static/js/main.3f219420.js"
+    "static/css/main.ec742639.css",
+    "static/js/main.da2ca238.js"
   ]
 }
