@@ -173,12 +173,13 @@ const MarketplacePage = () => {
               {plugin.platform.toUpperCase()}
             </Badge>
 
-            {/* Image Placeholder */}
-            <div className="h-32 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-              <div className="text-center text-gray-400">
-                <Image className="h-8 w-8 mx-auto mb-1 opacity-50" />
-                <p className="text-xs font-medium">Plugin Preview</p>
-              </div>
+            {/* Plugin Image */}
+            <div className="h-32 bg-gray-100 flex items-center justify-center overflow-hidden">
+              <img 
+                src="/plugin-preview.png" 
+                alt={`${plugin.name} preview`}
+                className="w-full h-full object-cover"
+              />
             </div>
 
             <CardHeader className="pb-3">
